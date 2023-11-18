@@ -3,6 +3,8 @@ package com.javaserver.core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.javaserver.routeHandlers.RouteHandler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,23 +29,11 @@ public class HttpConnectionWorkerThread extends Thread {
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            RouteManager routeManager = new RouteManager(socket);
 
-            System.out.println("finished reading");
+            RouteHandler routeHandler = routeManager.assignRouter();
 
-            // Close the socket and reader
-            String html = "<html><head><title>Simple Java HTTP Server</title></head><body><h1>This page was served using my Simple Java HTTP Server</h1></body></html>";
-
-            final String CRLF = "\r\n"; // 13, 10
-
-            String response = "HTTP/1.1 200 OK" + CRLF + // Status Line : HTTTP_VERSION RESPONSE_CODE RESPONSE_MESSAGE
-                    "Content-Length: " + html.getBytes().length + CRLF + // HEADER
-                    CRLF +
-                    html +
-                    CRLF + CRLF;
-
-            outputStream.write(response.getBytes());
-            reader.close();
+            routeHandler.respond();
 
             LOGGER.info(" * Connection Processing Finished.");
         } catch (IOException e) {
