@@ -3,8 +3,8 @@ package com.javaserver.routeHandlers;
 import java.io.IOException;
 import java.net.Socket;
 
-public class NoFound extends RouteHandler {
-    public NoFound(Socket socket) {
+public class NotFound extends RouteHandler {
+    public NotFound(Socket socket) {
         super(socket);
     }
 
